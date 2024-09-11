@@ -1,10 +1,11 @@
 import {Row, Col, Card, Button, Typography} from "antd";
 import {GoogleOutlined, FacebookOutlined} from "@ant-design/icons";
-import {FacebookAuthProvider, signInWithPopup} from "firebase/auth";
+import {FacebookAuthProvider, GoogleAuthProvider, signInWithPopup} from "firebase/auth";
 import {db, auth} from "../../firebase/config";
 import {doc, getDoc, setDoc} from "firebase/firestore";
 
 const fbProvider = new FacebookAuthProvider();
+const ggProvider = new GoogleAuthProvider();
 
 function Login () {
     const handleFbLogin = async () => {
@@ -19,7 +20,27 @@ function Login () {
                     email: user.email,
                     photoURL: user.photoURL,
                     providerId: providerId,
-                    createdAt: user.metadata.createdAt,
+                    createdAt: new Date().toISOString(),
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleGgLogin = async () => {
+        try {
+            const data = await signInWithPopup(auth, ggProvider);
+            const {user, providerId} = data;
+            const userDocRef = doc(db, "users", user.uid);
+            const userDocSnapshot = await getDoc(userDocRef);
+            if (!userDocSnapshot.exists()) {
+                await setDoc(userDocRef, {
+                    name: user.displayName,
+                    email: user.email,
+                    photoURL: user.photoURL,
+                    providerId: providerId,
+                    createdAt: new Date().toISOString(),
                 });
             }
         } catch (error) {
@@ -36,6 +57,7 @@ function Login () {
                         <Button
                             icon={<GoogleOutlined />}
                             style={{ textAlign: "center", width: "100%", marginBottom: 10, height: "40px" }}
+                            onClick={handleGgLogin}
                         >
                             Login with Google
                         </Button>
