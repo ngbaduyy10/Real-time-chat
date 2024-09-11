@@ -32,12 +32,11 @@ function RoomList () {
 
     const LinkStyled = styled(Typography.Link)`
         display: block;
-        color: white;
         margin-bottom: 5px;
-        font-size: 16px;
+        font-size: 18px;
     `;
 
-    const {user, setSelectedRoom} = useContext(AuthContext);
+    const {user, selectedRoom, setSelectedRoom} = useContext(AuthContext);
     const {id} = user;
     const [showAddRoom, setShowAddRoom] = useState(false);
 
@@ -56,7 +55,13 @@ function RoomList () {
             <Collapse defaultActiveKey={['1']} ghost>
                 <PanelStyled header="Room List" key="1">
                     {rooms.map((room) => (
-                        <LinkStyled key={room.id} onClick={() => setSelectedRoom(room)}>{room.name}</LinkStyled>
+                        <LinkStyled
+                            key={room.id}
+                            style={room.id === selectedRoom?.id ? {color: 'blue'} : {color: 'white'}}
+                            onClick={() => setSelectedRoom(room)}
+                        >
+                            {room.name}
+                        </LinkStyled>
                     ))}
                     <Button
                         icon={<PlusOutlined />}

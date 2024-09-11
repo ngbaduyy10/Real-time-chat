@@ -1,6 +1,12 @@
-import {doc, setDoc} from "firebase/firestore";
+import {doc, getDoc} from "firebase/firestore";
 import {db} from "./config";
 
-export const addDocument = async (collection, id, data) => {
-    return await setDoc(doc(db, collection, id), data);
+export const getDocumentById = async (collectionName, documentId) => {
+    const docRef = doc(db, collectionName, documentId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        return docSnap.data();
+    } else {
+        return null;
+    }
 }

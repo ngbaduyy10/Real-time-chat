@@ -18,8 +18,13 @@ function UserInfo () {
         }
     `;
 
-    const {user} = useContext(AuthContext);
+    const {user, setSelectedRoom} = useContext(AuthContext);
     const {displayName, photoURL} = user;
+
+    const handleSignOut = async () => {
+        setSelectedRoom(null);
+        await signOut(auth);
+    }
 
     return (
         <>
@@ -28,7 +33,7 @@ function UserInfo () {
                     <Avatar size="large" src={photoURL}>{photoURL ? '' : displayName.charAt(0).toUpperCase()}</Avatar>
                     <span className="username">{displayName}</span>
                 </div>
-                <Button size="large" ghost onClick={() => signOut(auth)}>Logout</Button>
+                <Button size="large" ghost onClick={handleSignOut}>Logout</Button>
             </WrapperStyled>
         </>
     )

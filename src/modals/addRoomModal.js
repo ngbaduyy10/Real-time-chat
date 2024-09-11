@@ -20,6 +20,7 @@ function AddRoomModal ({showAddRoom, setShowAddRoom}) {
         await addDoc(collection(db, 'rooms'), {
             ...value,
             members: [user.id],
+            createdAt: new Date().toISOString(),
         });
         handleCancel();
         setLoading(false);

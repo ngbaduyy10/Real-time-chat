@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { onSnapshot, collection, query, where } from "firebase/firestore";
+import { onSnapshot, collection, query, where, orderBy } from "firebase/firestore";
 import { db } from "../firebase/config";
 
 const useFirestore = (col, condition) => {
@@ -7,8 +7,8 @@ const useFirestore = (col, condition) => {
 
     useEffect(() => {
         let colRef = collection(db, col);
-        if (condition) {
-            colRef = query(colRef, where(condition.fieldName, condition.operator, condition.compareValue));
+        if (condition && condition.compareValue) {
+            colRef = query(colRef, where(condition.fieldName, condition.operator, condition.compareValue), orderBy('createdAt'));
         }
 
         const unsubscribe = onSnapshot(colRef, (snapshot) => {
